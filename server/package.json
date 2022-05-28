@@ -1,0 +1,30 @@
+{
+  "name": "dwitter",
+  "version": "1.0.0",
+  "description": "twitter clone coding - simple ver",
+  "main": "app.js",
+  "type":"module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HyunKyungHan/Dwitter.git"
+  },
+  "author": "hk-DreamCoding",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HyunKyungHan/Dwitter/issues"
+  },
+  "homepage": "https://github.com/HyunKyungHan/Dwitter#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "helmet": "^5.1.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}
