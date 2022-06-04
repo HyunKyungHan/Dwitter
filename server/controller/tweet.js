@@ -1,6 +1,6 @@
 import * as tweetRepository from '../data/tweet.js';
 
-export async function getTweets(req, res) {   //async가 붙으면 프로미스 형태가 됨.->비동기적으로 처리됨.
+export async function getTweets(req, res) {
   const username = req.query.username;
   const data = await (username
     ? tweetRepository.getAllByUsername(username)
@@ -27,16 +27,27 @@ export async function createTweet(req, res, next) {
 export async function updateTweet(req, res, next) {
   const id = req.params.id;
   const text = req.body.text;
-  const tweet = await tweetRepository.update(id, text);
-  if (tweet) {
-    res.status(200).json(tweet);
-  } else {
-    res.status(404).json({ message: `Tweet id(${id}) not found` });
+  //해당 userid로 작성한 tweet에 대해서만 update/delete할 권한을 부여해야 한다.
+  const tweet = await tweetRepository.getById(id);
+  if(!tweet) {
+    return res.sendStatus(404);  //tweet이 이미 존재하는지 확인
   }
+  if(tweet.userId !== req.userId) {
+    return res.sendStatus(403);   //403: 로그인된 사용자지만 권한이 없을 때 사용.
+  }
+  const updated = await tweetRepository.update(id, text);
+    res.status(200).json(updated);   //둘 다 아니라면 tweet update하기
 }
 
 export async function deleteTweet(req, res, next) {
   const id = req.params.id;
+  const tweet = await tweetRepository.getById(id);
+  if(!tweet) {
+    return res.sendStatus(404);  //tweet이 이미 존재하는지 확인
+  }
+  if(tweet.userId !== req.userId) {
+    return res.sendStatus(403);   //403: 로그인된 사용자지만 권한이 없을 때 사용.
+  }
   await tweetRepository.remove(id);
   res.sendStatus(204);
 }
