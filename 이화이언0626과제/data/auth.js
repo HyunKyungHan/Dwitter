@@ -1,22 +1,46 @@
-// abcd1234: $2b$12$G9xf8SFq3oTEgdj7ozHQ/uhDOyeQcUEDU8tnOcvpvApuadr3nE5Vm
-import {db} from '../db/database.js'
+import SQ from 'sequelize';
+import { sequelize } from '../db/database.js';
+const DataTypes = SQ.DataTypes;
+
+export const User = sequelize.define(
+  /*코드 상에서 user모델 정의*/
+  'user',
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      allowNull: false,
+      primaryKey: true,
+    },
+    username: {
+      type: DataTypes.STRING(45),
+      allowNull: false,
+    },
+    password: {
+      type: DataTypes.STRING(128),
+      allowNull: false,
+    },
+    name: {
+      type: DataTypes.STRING(128),
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING(128),
+      allowNull: false,
+    },
+    url: DataTypes.TEXT,
+  },
+  { timestamps: false }
+);
 
 export async function findByUsername(username) {
-  return db /*데이터를 db에서 읽어오도록 코드를 수정*/
-  .execute('SELECT * from users WHERE username=?',[username]) //
-  .then((result) => result[0][0]);
+  return User.findOne({ where: { username } });
 }
 
 export async function findById(id) {
-  return db
-    .execute('SELECT * FROM users WHERE id=?', [id]) //
-    .then((result) => result[0][0]);
+  return User.findByPk(id);
 }
 
 export async function createUser(user) {
-  /*object deconstruction 이용*/
-  const {username, password, name, email, url} = user;
-  return db.execute('INSERT INTO users (username, password, name, email, url) VALUES(?,?,?,?,?)', [
-    username, password, name, email, url
-  ]).then((result)=>result[0].insertId);
+  return User.create(user).then((data) => data.dataValues.id);
 }
