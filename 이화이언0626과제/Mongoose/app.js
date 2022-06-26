@@ -33,4 +33,4 @@ connectDB()
     const server = app.listen(config.host.port);
     initSocket(server);
   })
-  .catch(console.error);
+  .catch(console.error); 
